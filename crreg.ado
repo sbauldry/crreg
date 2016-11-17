@@ -85,6 +85,24 @@ program Estimate, eclass sortpreserve
 		local IV `r(varlist)'
 	}
 	
+	* prepare no constraint variables
+	if ( "`free'" != "" ) {
+		fvexpand `free'
+		local frIV `r(varlist)'
+		
+		* verify subset of IVs
+		local frchk : list local(frIV) - local(IV)
+		if ( "`frchk'" != "" ) {
+			dis ""
+			dis as error "free{yellow}(`frchk'){red} is not included in" ///
+			             " the list of independent variables: {yellow}`IV'"
+			exit 198
+		}
+		
+		* remove from list of IVs
+		local cnIV : list local(cnIV) - local(frIV)
+	}
+	
 	/* prepare proportionality constraint variables
 	if ( "`prop'" == "" ) {
 		dis ""
@@ -107,32 +125,9 @@ program Estimate, eclass sortpreserve
 		* remove from list of IVs
 		local cnIV : list local(IV) - local(prIV)
 	}
-	
-	* prepare no constraint variables
-	if ( "`free'" == "" ) {
-		dis ""
-		dis as error "no free variables listed"
-		exit 198
-	}
-	if ( "`free'" != "" ) {
-		fvexpand `free'
-		local frIV `r(varlist)'
-		
-		* verify subset of IVs
-		local frchk : list local(frIV) - local(IV)
-		if ( "`frchk'" != "" ) {
-			dis ""
-			dis as error "free{yellow}(`frchk'){red} is not included in" ///
-			             " the list of independent variables: {yellow}`IV'"
-			exit 198
-		}
-		
-		* remove from list of IVs
-		local cnIV : list local(cnIV) - local(frIV)
-	}
 	*/
 
-	* create ML model statement
+	* create ML model statements
 	
 	* case 1: all variables with parallel assumption
 	if ( "`free'" == "" & "`prop'" == "" ) {
@@ -144,15 +139,32 @@ program Estimate, eclass sortpreserve
 	
 		* obtain ML estimates
 		ml model lf cr_lf `model' `wgt' if `touse', title(`link_title') ///
-			vce(`vcetype') maximize
+		   vce(`vcetype') maximize
 			
 		* replace current b, V, and eqnames matrices
 		tempname b v
 		mat `b' = e(b)
 		mat `v' = e(V)
 	}
-
 	
+	* case 2: all variables with non-parallel assumption
+	if ( "`free'" != "" & "`cnIV'" == "" ) {
+		local model "(eq1: `Y' = `free')"
+		
+		forval i = 2/$nCatm1 {
+			local model "`model' (eq`i': `free')"
+		}
+		
+		* obtain ML estimates
+		ml model lf cr_np_lf `model' `wgt' if `touse', title(`link_title') ///
+		   vce(`vcetype') maximize
+		
+		* replace current b, V, and eqnames matrices
+		tempname b v
+		mat `b' = e(b)
+		mat `v' = e(V)
+	}
+
 	* return and display results
 	ereturn local cmd crreg
 	ereturn repost b = `b' V = `v', rename
