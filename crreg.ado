@@ -100,7 +100,7 @@ program Estimate, eclass sortpreserve
 		}
 		
 		* remove from list of IVs
-		local cnIV : list local(cnIV) - local(frIV)
+		local cnIV : list local(IV) - local(frIV)
 	}
 	
 	/* prepare proportionality constraint variables
@@ -131,6 +131,7 @@ program Estimate, eclass sortpreserve
 	
 	* case 1: all variables with parallel assumption
 	if ( "`free'" == "" & "`prop'" == "" ) {
+		dis "case1"
 		local model "(cns: `Y' = `IV', nocons)"
 	
 		forval i = 1/$nCatm1 {
@@ -148,7 +149,8 @@ program Estimate, eclass sortpreserve
 	}
 	
 	* case 2: all variables with non-parallel assumption
-	if ( "`free'" != "" & "`cnIV'" == "" ) {
+	if ( "`free'" != "" & "`prop'" == "" & "`cnIV'" == "" ) {
+		dis "case2"
 		local model "(eq1: `Y' = `free')"
 		
 		forval i = 2/$nCatm1 {
@@ -157,6 +159,25 @@ program Estimate, eclass sortpreserve
 		
 		* obtain ML estimates
 		ml model lf cr_np_lf `model' `wgt' if `touse', title(`link_title') ///
+		   vce(`vcetype') maximize
+		
+		* replace current b, V, and eqnames matrices
+		tempname b v
+		mat `b' = e(b)
+		mat `v' = e(V)
+	}
+	
+	* case 3: subset of variables with non-parallel assumption
+	if ( "`free'" != "" & "`prop'" == "" & "`cnIV'" != "" )  {
+		dis "case3"
+		local model "(cns: `Y' = `cnIV', nocons)"
+		
+		forval i = 1/$nCatm1 {
+			local model "`model' (eq`i': `free')"
+		}
+		
+		* obtain ML estimates
+		ml model lf cr_pnp_lf `model' `wgt' if `touse', title(`link_title') ///
 		   vce(`vcetype') maximize
 		
 		* replace current b, V, and eqnames matrices

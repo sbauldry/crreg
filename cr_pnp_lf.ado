@@ -253,5 +253,5 @@ end
 
 
 /* History
-1.0.0  11.16.16  initial likelihood program for arbitrary number of categories
+1.0.0  11.17.16  initial likelihood program for arbitrary number of categories
 
