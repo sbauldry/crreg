@@ -82,7 +82,7 @@ program Estimate, eclass sortpreserve
 	* prepare IVs
 	if ( "`X'" != "" ) {
 		fvexpand `X'
-		local IV `r(varlist)'
+		local cnIV `r(varlist)'
 	}
 	
 	* prepare no constraint variables
@@ -91,7 +91,7 @@ program Estimate, eclass sortpreserve
 		local frIV `r(varlist)'
 		
 		* verify subset of IVs
-		local frchk : list local(frIV) - local(IV)
+		local frchk : list local(frIV) - local(cnIV)
 		if ( "`frchk'" != "" ) {
 			dis ""
 			dis as error "free{yellow}(`frchk'){red} is not included in" ///
@@ -100,21 +100,16 @@ program Estimate, eclass sortpreserve
 		}
 		
 		* remove from list of IVs
-		local cnIV : list local(IV) - local(frIV)
+		local cnIV : list local(cnIV) - local(frIV)
 	}
 	
-	/* prepare proportionality constraint variables
-	if ( "`prop'" == "" ) {
-		dis ""
-		dis as error "no variables with proportionality constraint listed"
-		exit 198
-	}
+	* prepare proportionality constraint variables
 	if ( "`prop'" != "" ) {
 		fvexpand `prop'
 		local prIV `r(varlist)'
 		
 		* verify subset of IVs
-		local prchk : list local(prIV) - local(IV)
+		local prchk : list local(prIV) - local(cnIV)
 		if ( "`prchk'" != "" ) {
 			dis ""
 			dis as error "prop{yellow}(`prchk'){red} is not included in" ///
@@ -123,16 +118,16 @@ program Estimate, eclass sortpreserve
 		}
 		
 		* remove from list of IVs
-		local cnIV : list local(IV) - local(prIV)
+		local cnIV : list local(cnIV) - local(prIV)
 	}
-	*/
+	
 
 	* create ML model statements
 	
 	* case 1: all variables with parallel assumption
-	if ( "`free'" == "" & "`prop'" == "" ) {
+	if ( "`free'" == "" & "`prop'" == "" & "`cnIV'" != "" ) {
 		dis "case1"
-		local model "(cns: `Y' = `IV', nocons)"
+		local model "(cns: `Y' = `cnIV', nocons)"
 	
 		forval i = 1/$nCatm1 {
 			local model "`model' /tau`i'"
@@ -185,6 +180,30 @@ program Estimate, eclass sortpreserve
 		mat `b' = e(b)
 		mat `v' = e(V)
 	}
+	
+	* case 4: subset of variables with non-parallel assumption and 
+	*         proportionality assumption
+	if ( "`free'" != "" & "`prop'" != "" & "`cnIV'" != "" )  {
+		dis "case4"
+		local model "(cns: `Y' = `cnIV', nocons) (prp: `prIV', nocons)"
+		
+		forval i = 1/$nCatm1 {
+			local model "`model' (eq`i': `free')"
+		}
+		
+		forval i = 2/$nCatm1 {
+			local model "`model' /phi`i'"
+		}
+		
+		* obtain ML estimates
+		ml model lf cr_ppc_lf `model' `wgt' if `touse', title(`link_title') ///
+		   vce(`vcetype') maximize
+		
+		* replace current b, V, and eqnames matrices
+		tempname b v
+		mat `b' = e(b)
+		mat `v' = e(V)
+	}	
 
 	* return and display results
 	ereturn local cmd crreg
