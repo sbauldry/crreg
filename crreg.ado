@@ -181,10 +181,29 @@ program Estimate, eclass sortpreserve
 		mat `v' = e(V)
 	}
 	
-	* case 4: subset of variables with non-parallel assumption and 
+	* case 4: subset of variables with proportionality assumption
+	if ( "`free'" == "" & "`prop'" != "" & "`cnIV'" != "" )  {
+		dis "case4"
+		local model "(cns: `Y' = `cnIV', nocons) (prp: `prIV')"
+		
+		forval i = 2/$nCatm1 {
+			local model "`model' /phi`i'"
+		}	
+		
+		* obtain ML estimates
+		ml model lf cr_pc_lf `model' `wgt' if `touse', title(`link_title') ///
+		   vce(`vcetype') maximize
+		
+		* replace current b, V, and eqnames matrices
+		tempname b v
+		mat `b' = e(b)
+		mat `v' = e(V)
+	}
+	
+	* case 5: subset of variables with non-parallel assumption and 
 	*         proportionality assumption
 	if ( "`free'" != "" & "`prop'" != "" & "`cnIV'" != "" )  {
-		dis "case4"
+		dis "case5"
 		local model "(cns: `Y' = `cnIV', nocons) (prp: `prIV', nocons)"
 		
 		forval i = 1/$nCatm1 {

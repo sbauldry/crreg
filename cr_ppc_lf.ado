@@ -4,7 +4,6 @@ capture program drop cr_ppc_lf
 program cr_ppc_lf
 	version 14
 		
-	global nCatm1 = 3	
 	* creating arguments based on number of categories of Y stored in globals
 	local arguments "lnf xb_c xb_p"
 		
@@ -183,78 +182,78 @@ program cr_ppc_lf
 	
 	* likelihood function for complementary log-log link
 	if ( "$Link" == "cloglog" ) {	
-		qui replace `lnf' = ln(exp(-exp(-`xb_c' - `xb_f1' - `xb_p')) if $ML_y == 1
+		qui replace `lnf' = ln(exp(-exp(-`xb_c' - `xb_f1' - `xb_p'))) if $ML_y == 1
 		
-		qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p')) +  ///
-		                    ln(exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2')) if $ML_y == 2
+		qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p'))) +  ///
+		                    ln(exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2'))) if $ML_y == 2
 		
 		if( $nCat > 3 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p')) + ///
-			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2')) + ///
-		                        ln(exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3')) if $ML_y == 3
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p'))) + ///
+			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2'))) + ///
+		                        ln(exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3'))) if $ML_y == 3
 		}
 		
 		if( $nCat > 4 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p')) + ///
-			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3')) + ///
-		                        ln(exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4')) if $ML_y == 4
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p'))) + ///
+			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3'))) + ///
+		                        ln(exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4'))) if $ML_y == 4
 		}
 		
 		if( $nCat > 5 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p')) + ///
-			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4')) + ///
-		                        ln(exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5')) if $ML_y == 5
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p'))) + ///
+			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4'))) + ///
+		                        ln(exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5'))) if $ML_y == 5
 		}
 		
 		if( $nCat > 6 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p')) + ///
-			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5')) + ///
-		                        ln(exp(-exp(-`xb_c' - `xb_f6'  - `xb_p'*`phi6')) if $ML_y == 6
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p'))) + ///
+			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5'))) + ///
+		                        ln(exp(-exp(-`xb_c' - `xb_f6'  - `xb_p'*`phi6'))) if $ML_y == 6
 		}
 		
 		if( $nCat > 7 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p')) + ///
-			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f6'  - `xb_p'*`phi6')) + ///
-		                        ln(exp(-exp(-`xb_c' - `xb_f7'  - `xb_p'*`phi7')) if $ML_y == 7
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p'))) + ///
+			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f6'  - `xb_p'*`phi6'))) + ///
+		                        ln(exp(-exp(-`xb_c' - `xb_f7'  - `xb_p'*`phi7'))) if $ML_y == 7
 		}
 		
 		if( $nCat > 8 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p')) + ///
-			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f6'  - `xb_p'*`phi6')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f7'  - `xb_p'*`phi7')) + ///
-		                        ln(exp(-exp(-`xb_c' - `xb_f8'  - `xb_p'*`phi8')) if $ML_y == 8
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p'))) + ///
+			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f6'  - `xb_p'*`phi6'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f7'  - `xb_p'*`phi7'))) + ///
+		                        ln(exp(-exp(-`xb_c' - `xb_f8'  - `xb_p'*`phi8'))) if $ML_y == 8
 		}
 		
 		if( $nCat > 9 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p')) + ///
-			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f6'  - `xb_p'*`phi6')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f7'  - `xb_p'*`phi7')) + ///
-								ln(1 - exp(-exp(-`xb_c' - `xb_f8'  - `xb_p'*`phi8')) + ///
-		                        ln(exp(-exp(-`xb_c' - `xb_f9'  - `xb_p'*`phi9')) if $ML_y == 9
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_f1'  - `xb_p'))) + ///
+			                    ln(1 - exp(-exp(-`xb_c' - `xb_f2'  - `xb_p'*`phi2'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f3'  - `xb_p'*`phi3'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f4'  - `xb_p'*`phi4'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f5'  - `xb_p'*`phi5'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f6'  - `xb_p'*`phi6'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f7'  - `xb_p'*`phi7'))) + ///
+								ln(1 - exp(-exp(-`xb_c' - `xb_f8'  - `xb_p'*`phi8'))) + ///
+		                        ln(exp(-exp(-`xb_c' - `xb_f9'  - `xb_p'*`phi9'))) if $ML_y == 9
 		}
 		
 		* build equation for last value of Y
-		local eqn `" ln(1 - exp(-exp(-`xb_c' - `xb_f1' - `xb_p')) "'
+		local eqn `" ln(1 - exp(-exp(-`xb_c' - `xb_f1' - `xb_p'))) "'
 		forval i = 2/$nCatm1 {
-			local eqn `" `eqn' + ln(1 - exp(-exp(-`xb_c' - `xb_f`i'' - `xb_p'*`phi`i'')) "'
+			local eqn `" `eqn' + ln(1 - exp(-exp(-`xb_c' - `xb_f`i'' - `xb_p'*`phi`i''))) "'
 		}
 		qui replace `lnf' = `eqn' if $ML_y == $nCat
 	}

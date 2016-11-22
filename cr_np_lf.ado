@@ -173,78 +173,78 @@ program cr_np_lf
 	
 	* likelihood function for complementary log-log link
 	if ( "$Link" == "cloglog" ) {	
-		qui replace `lnf' = ln(exp(-exp(-`xb1')) if $ML_y == 1
+		qui replace `lnf' = ln(exp(-exp(-`xb1'))) if $ML_y == 1
 		
-		qui replace `lnf' = ln(1 - exp(-exp(-`xb1')) + ///
-		                    ln(exp(-exp(-`xb2')) if $ML_y == 2
+		qui replace `lnf' = ln(1 - exp(-exp(-`xb1'))) + ///
+		                    ln(exp(-exp(-`xb2'))) if $ML_y == 2
 		
 		if( $nCat > 3 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb1')) + ///
-			                    ln(1 - exp(-exp(-`xb2')) + ///
-		                        ln(exp(-exp(-`xb3')) if $ML_y == 3
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb1'))) + ///
+			                    ln(1 - exp(-exp(-`xb2'))) + ///
+		                        ln(exp(-exp(-`xb3'))) if $ML_y == 3
 		}
 		
 		if( $nCat > 4 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb1')) + ///
-			                    ln(1 - exp(-exp(-`xb2')) + ///
-								ln(1 - exp(-exp(-`xb3')) + ///
-		                        ln(exp(-exp(-`xb4')) if $ML_y == 4
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb1'))) + ///
+			                    ln(1 - exp(-exp(-`xb2'))) + ///
+								ln(1 - exp(-exp(-`xb3'))) + ///
+		                        ln(exp(-exp(-`xb4'))) if $ML_y == 4
 		}
 		
 		if( $nCat > 5 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb1')) + ///
-			                    ln(1 - exp(-exp(-`xb2')) + ///
-								ln(1 - exp(-exp(-`xb3')) + ///
-								ln(1 - exp(-exp(-`xb4')) + ///
-		                        ln(exp(-exp(-`xb5')) if $ML_y == 5
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb1'))) + ///
+			                    ln(1 - exp(-exp(-`xb2'))) + ///
+								ln(1 - exp(-exp(-`xb3'))) + ///
+								ln(1 - exp(-exp(-`xb4'))) + ///
+		                        ln(exp(-exp(-`xb5'))) if $ML_y == 5
 		}
 		
 		if( $nCat > 6 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb1')) + ///
-			                    ln(1 - exp(-exp(-`xb2')) + ///
-								ln(1 - exp(-exp(-`xb3')) + ///
-								ln(1 - exp(-exp(-`xb4')) + ///
-								ln(1 - exp(-exp(-`xb5')) + ///
-		                        ln(exp(-exp(-`xb6')) if $ML_y == 6
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb1'))) + ///
+			                    ln(1 - exp(-exp(-`xb2'))) + ///
+								ln(1 - exp(-exp(-`xb3'))) + ///
+								ln(1 - exp(-exp(-`xb4'))) + ///
+								ln(1 - exp(-exp(-`xb5'))) + ///
+		                        ln(exp(-exp(-`xb6'))) if $ML_y == 6
 		}
 		
 		if( $nCat > 7 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb1')) + ///
-			                    ln(1 - exp(-exp(-`xb2')) + ///
-								ln(1 - exp(-exp(-`xb3')) + ///
-								ln(1 - exp(-exp(-`xb4')) + ///
-								ln(1 - exp(-exp(-`xb5')) + ///
-								ln(1 - exp(-exp(-`xb6')) + ///
-		                        ln(exp(-exp(-`xb7')) if $ML_y == 7
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb1'))) + ///
+			                    ln(1 - exp(-exp(-`xb2'))) + ///
+								ln(1 - exp(-exp(-`xb3'))) + ///
+								ln(1 - exp(-exp(-`xb4'))) + ///
+								ln(1 - exp(-exp(-`xb5'))) + ///
+								ln(1 - exp(-exp(-`xb6'))) + ///
+		                        ln(exp(-exp(-`xb7'))) if $ML_y == 7
 		}
 		
 		if( $nCat > 8 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb1')) + ///
-			                    ln(1 - exp(-exp(-`xb2')) + ///
-								ln(1 - exp(-exp(-`xb3')) + ///
-								ln(1 - exp(-exp(-`xb4')) + ///
-								ln(1 - exp(-exp(-`xb5')) + ///
-								ln(1 - exp(-exp(-`xb6')) + ///
-								ln(1 - exp(-exp(-`xb7')) + ///
-		                        ln(exp(-exp(-`xb8')) if $ML_y == 8
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb1'))) + ///
+			                    ln(1 - exp(-exp(-`xb2'))) + ///
+								ln(1 - exp(-exp(-`xb3'))) + ///
+								ln(1 - exp(-exp(-`xb4'))) + ///
+								ln(1 - exp(-exp(-`xb5'))) + ///
+								ln(1 - exp(-exp(-`xb6'))) + ///
+								ln(1 - exp(-exp(-`xb7'))) + ///
+		                        ln(exp(-exp(-`xb8'))) if $ML_y == 8
 		}
 		
 		if( $nCat > 9 ) {
-			qui replace `lnf' = ln(1 - exp(-exp(-`xb1')) + ///
-			                    ln(1 - exp(-exp(-`xb2')) + ///
-								ln(1 - exp(-exp(-`xb3')) + ///
-								ln(1 - exp(-exp(-`xb4')) + ///
-								ln(1 - exp(-exp(-`xb5')) + ///
-								ln(1 - exp(-exp(-`xb6')) + ///
-								ln(1 - exp(-exp(-`xb7')) + ///
-								ln(1 - exp(-exp(-`xb8')) + ///
-		                        ln(exp(-exp(-`xb9')) if $ML_y == 9
+			qui replace `lnf' = ln(1 - exp(-exp(-`xb1'))) + ///
+			                    ln(1 - exp(-exp(-`xb2'))) + ///
+								ln(1 - exp(-exp(-`xb3'))) + ///
+								ln(1 - exp(-exp(-`xb4'))) + ///
+								ln(1 - exp(-exp(-`xb5'))) + ///
+								ln(1 - exp(-exp(-`xb6'))) + ///
+								ln(1 - exp(-exp(-`xb7'))) + ///
+								ln(1 - exp(-exp(-`xb8'))) + ///
+		                        ln(exp(-exp(-`xb9'))) if $ML_y == 9
 		}
 		
 		* build equation for last value of Y
-		local eqn `" ln(1 - exp(-exp(-`xb1')) "'
+		local eqn `" ln(1 - exp(-exp(-`xb1'))) "'
 		forval i = 2/$nCatm1 {
-			local eqn `" `eqn' + ln(1 - exp(-exp(-`xb`i'')) "'
+			local eqn `" `eqn' + ln(1 - exp(-exp(-`xb`i''))) "'
 		}
 		qui replace `lnf' = `eqn' if $ML_y == $nCat
 	}
