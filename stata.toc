@@ -1,0 +1,7 @@
+********************************************** begin stata.toc
+v 1.0
+d Shawn Bauldry, Purdue University, Department of Sociology
+d 
+p crreg A command for continuation ratio models.
+end stata.toc
+********************************************** end stata.toc
