@@ -1,7 +1,7 @@
 *! v1.0.0, S Bauldry, 15nov2016
 
 capture program drop crreg
-program crreg, properties(swml svyb svyj svyr mi)
+program crreg, properties(swml svyb svyj svyr mi or rrr irr hr eform)
 	version 14.1
 	if replay() {
 		if (`"`e(cmd)'"' != "crreg") error 301
@@ -13,38 +13,35 @@ end
 
 capture program drop Estimate
 program Estimate, eclass sortpreserve
-	syntax varlist(numeric) [if] [in] [pweight fweight aweight iweight] [, /// 	       
-		   PRop(varlist)     /// vars with proportionality constraint
-		   FRee(varlist)     /// vars with no constraint
-		   LINK(string)      /// link function (logit, probit, or cloglog)
-		   Level(cilevel)    /// display option for confidence intervals
-		   vce(string)]      /// robust and cluster robust standard errors              
+	syntax varlist(numeric fv) [if] [in] [pweight fweight aweight iweight] [, /// 	       
+		   PRop(varlist fv)    /// vars with proportionality constraint
+		   FRee(varlist fv)    /// vars with no constraint
+		   LINK(string)        /// link function (logit, probit, or cloglog)
+		   Level(cilevel)      /// display option for confidence intervals
+		   vce(string)         /// robust and cluster robust standard errors
+		   or rrr irr hr EForm /// exponential form options
+		   svy *               /// -mlopts, display options
+		   ]
 		   
+	* sample selection
 	marksample touse
-	
-	* identify DV and IVs
-	gettoken Y X : varlist
-	_fv_check_depvar `Y'
-	
-	* set globals for # categories
-	qui tab `Y'
-	global nCat   = r(r)
-	global nCatm1 = r(r) - 1
-	
-		* too few or two many categories
-		if ( $nCat < 3 ) {
-			dis ""
-			dis as error "{yellow}`Y'{red} has $nCat categories - a minimum" ///
-			             " of 3 is required"
-			exit 148
+		   
+	* parse VCE statement
+	if ( `"`vce'"' != "" ) {
+		my_vce_parse , vce(`vce')
+		local vcetype    "robust"
+		local clustervar "`r(clustervar)'"
+		if "`clustervar'" != "" {
+			markout `touse' `clustervar'
 		}
-		else if ( $nCat > 10 ) {
-			dis ""
-			dis as error "{yellow}`Y'{red} has $nCat categories - a maximum" ///
-			             " of 10 is allowed"
-			exit 149
-		}
-		
+	}
+	
+	* parse weight statement
+	if ( "`weight'" != "" ) {
+		local wgt "[`weight'`exp']"
+		markout `touse' `wvar'
+	}
+	
 	* check for link function (default to logit)
 	if ( "`link'" == "logit" | "`link'" == "l" | "`link'" == "" ) {
 		global Link       "logit"
@@ -64,20 +61,41 @@ program Estimate, eclass sortpreserve
 		exit 198
 	}
 	
-	* parse VCE statement
-	if ( `"`vce'"' != "" ) {
-		my_vce_parse , vce(`vce')
-		local vcetype    "robust"
-		local clustervar "`r(clustervar)'"
-		if "`clustervar'" != "" {
-			markout `touse' `clustervar'
-		}
+	* exponential form
+	local eform `or' `rrr' `irr' `hr' `eform'
+	local efopt : word count `eform'
+	if `efopt' > 1 {
+		dis as error "only one of or, rrr, irr, hr, eform can be specified"
+		exit 198
 	}
 	
-	* parse weight statement
-	if ( "`weight'" != "" ) {
-		local wgt "[`weight'`exp']"
-	}
+	* check for display and maximization options
+	_get_diopts diopts options, `options'
+	mlopts mlopts, `options'
+		
+	* identify DV and IVs
+	gettoken Y X : varlist
+	_fv_check_depvar `Y'
+
+	* set globals for # categories
+	tempname Yval
+	qui tab `Y' if `touse', matrow(`Yval') 
+	global nCat   = r(r)
+	global nCatm1 = r(r) - 1
+	
+		* too few or two many categories
+		if ( $nCat < 3 ) {
+			dis ""
+			dis as error "{yellow}`Y'{red} has $nCat categories - a minimum" ///
+			             " of 3 is required"
+			exit 148
+		}
+		else if ( $nCat > 10 ) {
+			dis ""
+			dis as error "{yellow}`Y'{red} has $nCat categories - a maximum" ///
+			             " of 10 is allowed"
+			exit 149
+		}
 		
 	* prepare IVs
 	if ( "`X'" != "" ) {
@@ -223,19 +241,38 @@ program Estimate, eclass sortpreserve
 		mat `b' = e(b)
 		mat `v' = e(V)
 	}	
+	
+	* Support for margins
+	forval i = 1/$nCat {
+		local j = `Yval'[`i',1]
+		local mdflt `mdflt' predict(pr outcome(`j'))
+	}
+	ereturn local marginsdefault `"`mdflt'"'
 
 	* return and display results
 	ereturn local cmd crreg
+	ereturn local free `free'
+	ereturn local prop `prop'
+	ereturn scalar k_cat = $nCat
+	ereturn local link `link'
 	ereturn repost b = `b' V = `v', rename
-	Replay, level(`level')
+	ereturn local marginsok pr xb
+	ereturn local marginsnotok stdp stddp SCores
+	
+	Replay, level(`level') `eform' 
 end
 
 
 
 capture program drop Replay
 program Replay
-	syntax [, Level(cilevel) or]
-	ml display, level(`level')
+	syntax [, Level(cilevel) or irr rrr hr EForm]
+	
+	* display options
+	_get_diopts diopts options, `options'
+	local diopts `diopts' `eform' level(`level') `or' `rrr' `irr' `hr'
+	
+	ml display, `diopts'
 end
 
 
