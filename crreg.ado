@@ -151,7 +151,6 @@ program Estimate, eclass sortpreserve
 	
 	* case 1: all variables with parallel assumption
 	if ( "`free'" == "" & "`prop'" == "" & "`cnIV'" != "" ) {
-		dis "case1"
 		local model "(cns: `Y' = `cnIV', nocons)"
 	
 		forval i = 1/$nCatm1 {
@@ -170,7 +169,6 @@ program Estimate, eclass sortpreserve
 	
 	* case 2: all variables with non-parallel assumption
 	if ( "`free'" != "" & "`prop'" == "" & "`cnIV'" == "" ) {
-		dis "case2"
 		local model "(eq1: `Y' = `free')"
 		
 		forval i = 2/$nCatm1 {
@@ -189,7 +187,6 @@ program Estimate, eclass sortpreserve
 	
 	* case 3: subset of variables with non-parallel assumption
 	if ( "`free'" != "" & "`prop'" == "" & "`cnIV'" != "" )  {
-		dis "case3"
 		local model "(cns: `Y' = `cnIV', nocons)"
 		
 		forval i = 1/$nCatm1 {
@@ -208,7 +205,6 @@ program Estimate, eclass sortpreserve
 	
 	* case 4: subset of variables with proportionality assumption
 	if ( "`free'" == "" & "`prop'" != "" & "`cnIV'" != "" )  {
-		dis "case4"
 		local model "(cns: `Y' = `cnIV', nocons) (prp: `prIV')"
 		
 		forval i = 2/$nCatm1 {
@@ -228,7 +224,6 @@ program Estimate, eclass sortpreserve
 	* case 5: subset of variables with non-parallel assumption and 
 	*         proportionality assumption
 	if ( "`free'" != "" & "`prop'" != "" & "`cnIV'" != "" )  {
-		dis "case5"
 		local model "(cns: `Y' = `cnIV', nocons) (prp: `prIV', nocons)"
 		
 		forval i = 1/$nCatm1 {
@@ -265,10 +260,10 @@ program Estimate, eclass sortpreserve
 	ereturn local vce "`vce'"
 	ereturn local vceptype "`vcetype'"
 	ereturn local clustvar "`clustervar'"
-	ereturn local predict "crreg_p"
-	ereturn local marginsok pr xb
-	ereturn local marginsnotok stdp stddp SCores
-	ereturn local marginsdefault `"`mdflt'"'
+	*ereturn local predict "crreg_p"
+	*ereturn local marginsok pr xb
+	*ereturn local marginsnotok stdp stddp SCores
+	*ereturn local marginsdefault `"`mdflt'"'
 	
 	Replay, level(`level') `eform' `diopts' `options'
 end
