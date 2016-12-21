@@ -42,6 +42,13 @@ program Estimate, eclass sortpreserve
 		markout `touse' `wvar'
 	}
 	
+	* check that there are cases
+	qui count if `touse' != 0
+	if r(N) == 0 {
+		dis as error "There are no observations"
+		exit 2000
+	}
+	
 	* check for link function (default to logit)
 	if ( "`link'" == "logit" | "`link'" == "l" | "`link'" == "" ) {
 		global Link       "logit"
@@ -247,26 +254,30 @@ program Estimate, eclass sortpreserve
 		local j = `Yval'[`i',1]
 		local mdflt `mdflt' predict(pr outcome(`j'))
 	}
-	ereturn local marginsdefault `"`mdflt'"'
 
 	* return and display results
+	ereturn repost b = `b' V = `v', rename 
 	ereturn local cmd crreg
 	ereturn local free `free'
 	ereturn local prop `prop'
 	ereturn scalar k_cat = $nCat
 	ereturn local link `link'
-	ereturn repost b = `b' V = `v', rename
+	ereturn local vce "`vce'"
+	ereturn local vceptype "`vcetype'"
+	ereturn local clustvar "`clustervar'"
+	ereturn local predict "crreg_p"
 	ereturn local marginsok pr xb
 	ereturn local marginsnotok stdp stddp SCores
+	ereturn local marginsdefault `"`mdflt'"'
 	
-	Replay, level(`level') `eform' 
+	Replay, level(`level') `eform' `diopts' `options'
 end
 
 
 
 capture program drop Replay
 program Replay
-	syntax [, Level(cilevel) or irr rrr hr EForm]
+	syntax [, Level(cilevel) or irr rrr hr EForm *]
 	
 	* display options
 	_get_diopts diopts options, `options'
@@ -315,11 +326,7 @@ program my_vce_parse, rclass
 	return local clustervar "`clustervar'"
 end
 
+
 /* History
 1.0.0  11.15.16  initial program for arbitrary number of categories
-
-
-
-
-
 
