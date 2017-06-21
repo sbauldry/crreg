@@ -151,7 +151,7 @@ program Estimate, eclass sortpreserve
 	
 	* case 1: all variables with parallel assumption
 	if ( "`free'" == "" & "`prop'" == "" & "`cnIV'" != "" ) {
-		local model "(cns: `Y' = `cnIV', nocons)"
+		local model "(constant: `Y' = `cnIV', nocons)"
 	
 		forval i = 1/$nCatm1 {
 			local model "`model' /tau`i'"
@@ -172,7 +172,7 @@ program Estimate, eclass sortpreserve
 		local model "(eq1: `Y' = `free')"
 		
 		forval i = 2/$nCatm1 {
-			local model "`model' (eq`i': `free')"
+			local model "`model' (cut`i': `free')"
 		}
 		
 		* obtain ML estimates
@@ -187,10 +187,10 @@ program Estimate, eclass sortpreserve
 	
 	* case 3: subset of variables with non-parallel assumption
 	if ( "`free'" != "" & "`prop'" == "" & "`cnIV'" != "" )  {
-		local model "(cns: `Y' = `cnIV', nocons)"
+		local model "(constant: `Y' = `cnIV', nocons)"
 		
 		forval i = 1/$nCatm1 {
-			local model "`model' (eq`i': `free')"
+			local model "`model' (cut`i': `free')"
 		}
 		
 		* obtain ML estimates
@@ -205,7 +205,7 @@ program Estimate, eclass sortpreserve
 	
 	* case 4: subset of variables with proportionality assumption
 	if ( "`free'" == "" & "`prop'" != "" & "`cnIV'" != "" )  {
-		local model "(cns: `Y' = `cnIV', nocons) (prp: `prIV')"
+		local model "(constant: `Y' = `cnIV', nocons) (factor: `prIV')"
 		
 		forval i = 2/$nCatm1 {
 			local model "`model' /phi`i'"
@@ -224,10 +224,10 @@ program Estimate, eclass sortpreserve
 	* case 5: subset of variables with non-parallel assumption and 
 	*         proportionality assumption
 	if ( "`free'" != "" & "`prop'" != "" & "`cnIV'" != "" )  {
-		local model "(cns: `Y' = `cnIV', nocons) (prp: `prIV', nocons)"
+		local model "(constant: `Y' = `cnIV', nocons) (factor: `prIV', nocons)"
 		
 		forval i = 1/$nCatm1 {
-			local model "`model' (eq`i': `free')"
+			local model "`model' (cut`i': `free')"
 		}
 		
 		forval i = 2/$nCatm1 {
@@ -251,19 +251,15 @@ program Estimate, eclass sortpreserve
 	}
 
 	* return and display results
-	ereturn repost b = `b' V = `v', rename 
+	ereturn scalar k_cat = $nCat
 	ereturn local cmd crreg
 	ereturn local free `free'
 	ereturn local prop `prop'
-	ereturn scalar k_cat = $nCat
 	ereturn local link `link'
 	ereturn local vce "`vce'"
 	ereturn local vceptype "`vcetype'"
 	ereturn local clustvar "`clustervar'"
-	*ereturn local predict "crreg_p"
-	*ereturn local marginsok pr xb
-	*ereturn local marginsnotok stdp stddp SCores
-	*ereturn local marginsdefault `"`mdflt'"'
+	ereturn repost b = `b' V = `v', rename 
 	
 	Replay, level(`level') `eform' `diopts' `options'
 end
@@ -324,4 +320,5 @@ end
 
 /* History
 1.0.0  11.15.16  initial program for arbitrary number of categories
+1.0.1  06.21.17  updated labels
 
