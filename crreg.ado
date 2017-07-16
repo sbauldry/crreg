@@ -1,4 +1,4 @@
-*! v1.0.0, S Bauldry, 15nov2016
+*! v1.0.2, S Bauldry, 16jul2017
 
 capture program drop crreg
 program crreg, properties(swml svyb svyj svyr mi or rrr irr hr eform)
@@ -151,7 +151,7 @@ program Estimate, eclass sortpreserve
 	
 	* case 1: all variables with parallel assumption
 	if ( "`free'" == "" & "`prop'" == "" & "`cnIV'" != "" ) {
-		local model "(constant: `Y' = `cnIV', nocons)"
+		local model "(constrained: `Y' = `cnIV', nocons)"
 	
 		forval i = 1/$nCatm1 {
 			local model "`model' /tau`i'"
@@ -172,7 +172,7 @@ program Estimate, eclass sortpreserve
 		local model "(eq1: `Y' = `free')"
 		
 		forval i = 2/$nCatm1 {
-			local model "`model' (cut`i': `free')"
+			local model "`model' (eq`i': `free')"
 		}
 		
 		* obtain ML estimates
@@ -187,10 +187,10 @@ program Estimate, eclass sortpreserve
 	
 	* case 3: subset of variables with non-parallel assumption
 	if ( "`free'" != "" & "`prop'" == "" & "`cnIV'" != "" )  {
-		local model "(constant: `Y' = `cnIV', nocons)"
+		local model "(constrained: `Y' = `cnIV', nocons)"
 		
 		forval i = 1/$nCatm1 {
-			local model "`model' (cut`i': `free')"
+			local model "`model' (eq`i': `free')"
 		}
 		
 		* obtain ML estimates
@@ -205,7 +205,7 @@ program Estimate, eclass sortpreserve
 	
 	* case 4: subset of variables with proportionality assumption
 	if ( "`free'" == "" & "`prop'" != "" & "`cnIV'" != "" )  {
-		local model "(constant: `Y' = `cnIV', nocons) (factor: `prIV')"
+		local model "(constrained: `Y' = `cnIV', nocons) (factor: `prIV')"
 		
 		forval i = 2/$nCatm1 {
 			local model "`model' /phi`i'"
@@ -224,10 +224,10 @@ program Estimate, eclass sortpreserve
 	* case 5: subset of variables with non-parallel assumption and 
 	*         proportionality assumption
 	if ( "`free'" != "" & "`prop'" != "" & "`cnIV'" != "" )  {
-		local model "(constant: `Y' = `cnIV', nocons) (factor: `prIV', nocons)"
+		local model "(constrained: `Y' = `cnIV', nocons) (factor: `prIV', nocons)"
 		
 		forval i = 1/$nCatm1 {
-			local model "`model' (cut`i': `free')"
+			local model "`model' (eq`i': `free')"
 		}
 		
 		forval i = 2/$nCatm1 {
@@ -321,4 +321,5 @@ end
 /* History
 1.0.0  11.15.16  initial program for arbitrary number of categories
 1.0.1  06.21.17  updated labels
+1.0.2  07.16.17  updated labels again
 
