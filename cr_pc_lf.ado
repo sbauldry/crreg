@@ -41,9 +41,10 @@ program cr_pc_lf
           local meqn_b `" `meqn_b' ln(1 - invlogit(-`xb_c' - `xb_p'*`phi`n'')) + "'
         }
 	
-      local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
-      qui replace `lnf' = `meqn' if $ML_y == `k'
-    }
+        local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
+        qui replace `lnf' = `meqn' if $ML_y == `k'
+      }
+	}
 	
 	* build equation for last value of Y
     local eqn `" ln(1 - invlogit(-`xb_c' - `xb_p')) "'
@@ -77,9 +78,10 @@ program cr_pc_lf
           local meqn_b `" `meqn_b' ln(1 - normal(-`xb_c' - `xb_p'*`phi`n'')) + "'
         }
 	
-      local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
-      qui replace `lnf' = `meqn' if $ML_y == `k'
-    }
+        local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
+        qui replace `lnf' = `meqn' if $ML_y == `k'
+      }
+	}
 	
 	* build equation for last value of Y
     local eqn `" ln(1 - normal(-`xb_c' - `xb_p')) "'
@@ -113,9 +115,10 @@ program cr_pc_lf
           local meqn_b `" `meqn_b' ln(exp(-exp(-`xb_c' - `xb_p'*`phi`n'')) + "'
         }
 	
-      local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
-      qui replace `lnf' = `meqn' if $ML_y == `k'
-    }
+        local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
+        qui replace `lnf' = `meqn' if $ML_y == `k'
+      }
+	}
 	
 	* build equation for last value of Y
     local eqn `" ln(exp(-exp(-`xb_c' - `xb_p')) "'
