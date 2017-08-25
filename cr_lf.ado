@@ -79,16 +79,16 @@ program cr_lf
   if ( "$Link" == "cloglog" ) {	
 		
     * equation for first value of Y
-    qui replace `lnf' = ln(1 - exp(-exp(`tau1' - `xb')) if $ML_y == 1
+    qui replace `lnf' = ln(1 - exp(-exp(`tau1' - `xb'))) if $ML_y == 1
 		
     * build equations for middle values of Y
     forval k = 2/$nCatm1 {
-      local meqn_b `" ln(1 - exp(-exp(`tau`k'' - `xb')) "'
+      local meqn_b `" ln(1 - exp(-exp(`tau`k'' - `xb'))) "'
     
 	  local meqn_a ""
 	  local m = `k' - 1
       forval n = 1/`m' {
-        local meqn_a `" `meqn_a' ln(exp(-exp(`tau`n'' - `xb')) + "'
+        local meqn_a `" `meqn_a' ln(exp(-exp(`tau`n'' - `xb'))) + "'
       }
 	
       local meqn `" `meqn_a' `meqn_b' "'
@@ -96,9 +96,9 @@ program cr_lf
     }
 	
 	* build equation for last value of Y
-	local eqn `" ln(exp(-exp(`tau1' - `xb')) "'
+	local eqn `" ln(exp(-exp(`tau1' - `xb'))) "'
 	forval o = 2/$nCatm1 {
-      local eqn `" `eqn' + ln(exp(-exp(`tau`o'' - `xb')) "'
+      local eqn `" `eqn' + ln(exp(-exp(`tau`o'' - `xb'))) "'
     }
 	qui replace `lnf' = `eqn' if $ML_y == $nCat
   }
