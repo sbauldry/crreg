@@ -1,0 +1,10 @@
+v 3
+d cratreg. Package for cratreg models.
+d Program by Shawn Bauldry, Jun Xu, and Andrew Fullerton.
+f cratreg.ado
+f cr_lf.ado
+f cr_np_lf.ado
+f cr_pc_lf.ado
+f cr_pnp_lf.ado
+f cr_ppc_lf.ado
+f cratreg.sthlp

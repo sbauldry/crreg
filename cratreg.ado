@@ -1,7 +1,7 @@
-*! v1.0.2, S Bauldry, 16jul2017
+*! v1.1.0, S Bauldry, 29aug2017
 
-capture program drop crreg
-program crreg, properties(swml svyb svyj svyr mi or rrr irr hr eform)
+capture program drop cratreg
+program cratreg, properties(swml svyb svyj svyr mi or rrr irr hr eform)
 	version 14.1
 	if replay() {
 		if (`"`e(cmd)'"' != "crreg") error 301
@@ -90,18 +90,12 @@ program Estimate, eclass sortpreserve
 	global nCat   = r(r)
 	global nCatm1 = r(r) - 1
 	
-		* too few or two many categories
+		* too few categories
 		if ( $nCat < 3 ) {
 			dis ""
 			dis as error "{yellow}`Y'{red} has $nCat categories - a minimum" ///
 			             " of 3 is required"
 			exit 148
-		}
-		else if ( $nCat > 10 ) {
-			dis ""
-			dis as error "{yellow}`Y'{red} has $nCat categories - a maximum" ///
-			             " of 10 is allowed"
-			exit 149
 		}
 		
 	* prepare IVs
@@ -245,6 +239,7 @@ program Estimate, eclass sortpreserve
 	}	
 	
 	* Support for margins
+        * note: not implemented in this version
 	forval i = 1/$nCat {
 		local j = `Yval'[`i',1]
 		local mdflt `mdflt' predict(pr outcome(`j'))
@@ -252,7 +247,7 @@ program Estimate, eclass sortpreserve
 
 	* return and display results
 	ereturn scalar k_cat = $nCat
-	ereturn local cmd crreg
+	ereturn local cmd cratreg
 	ereturn local free `free'
 	ereturn local prop `prop'
 	ereturn local link `link'
@@ -322,4 +317,5 @@ end
 1.0.0  11.15.16  initial program for arbitrary number of categories
 1.0.1  06.21.17  updated labels
 1.0.2  07.16.17  updated labels again
+1.1.0  08.29.17  changed name of program
 
