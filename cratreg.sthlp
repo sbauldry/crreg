@@ -53,7 +53,7 @@ Shawn Bauldry {break}
 Purdue University {break}
 Department of Sociology {break}
 sbauldry@purdue.edu {break}
-{browse "https://github.com/sbauldry/cratreg"}
+{browse "https://github.com/sbauldry/crreg"}
 
 
 {title:Acknowledgements}
