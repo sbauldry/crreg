@@ -3,14 +3,14 @@
 {title:Title}
 
 {p2colset 8 18 24 2}{...}
-{p2col:{cmd:crreg}} Continuation Ratio Regression Models {p_end}
+{p2col:{cmd:cratreg}} Continuation Ratio Regression Models {p_end}
 {p2colreset}{...}
 
 {marker syn}
 {title:Syntax}
 
 {p 8 18 2}
-{cmd:crreg} {it:depvar} [{it:indepvars}] 
+{cmd:cratreg} {it:depvar} [{it:indepvars}] 
 {ifin} {weight} 
 [{cmd:,}
 {cmdab:pr:op(}{it:varlist}{cmd:)}
@@ -23,9 +23,9 @@
 
 {title:Description}
 
-{p 4 4 2} {cmd:crreg} is a user-written command that fits continuation ratio models (Fullerton and Xu 2016). This class of models permits three types of covariates: (1) covariates whose effects are constrained to be equal across cutpoint equations, (2) covariates whose effects vary across cutpoint equations by a common factor (listed using the prop option), and (3) covariates whose effects freely vary across cutpoint equations (listed using the free option). The command allows for dependent variables with up to 10 transitions. 
+{p 4 4 2} {cmd:cratreg} is a user-written command that fits continuation ratio models (Fullerton and Xu 2016). This class of models permits three types of covariates: (1) covariates whose effects are constrained to be equal across cutpoint equations, (2) covariates whose effects vary across cutpoint equations by a common factor (listed using the prop option), and (3) covariates whose effects freely vary across cutpoint equations (listed using the free option). 
 
-{p 4 4 2} {cmd:crreg} supports factor variables, the {cmdab:svy} prefix, and the {cmdab:mi estimate} prefix.
+{p 4 4 2} {cmd:cratreg} supports factor variables, the {cmdab:svy} prefix, and the {cmdab:mi estimate} prefix.
 
 
 {title:Options}
@@ -41,7 +41,7 @@
 
 
 {marker exa}
-{dlgtab: Exmamples}
+{dlgtab: Examples}
 
 
 
@@ -53,7 +53,7 @@ Shawn Bauldry {break}
 Purdue University {break}
 Department of Sociology {break}
 sbauldry@purdue.edu {break}
-{browse "https://github.com/sbauldry/crreg"}
+{browse "https://github.com/sbauldry/cratreg"}
 
 
 {title:Acknowledgements}
