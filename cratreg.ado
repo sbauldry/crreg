@@ -1,4 +1,4 @@
-*! v1.1.0, S Bauldry, 29aug2017
+*! v1.2.0, S Bauldry, 18sep2017
 
 capture program drop cratreg
 program cratreg, properties(swml svyb svyj svyr mi or rrr irr hr eform)
@@ -90,6 +90,11 @@ program Estimate, eclass sortpreserve
 	global nCat   = r(r)
 	global nCatm1 = r(r) - 1
 	
+	macro drop y_*
+	forval i = 1/$nCat {
+		global y_`i' = `Yval'[`i',1]
+	}
+		
 		* too few categories
 		if ( $nCat < 3 ) {
 			dis ""
@@ -318,4 +323,5 @@ end
 1.0.1  06.21.17  updated labels
 1.0.2  07.16.17  updated labels again
 1.1.0  08.29.17  changed name of program
+1.2.0  09.18.17  fixed bug with non-standard values for Y
 

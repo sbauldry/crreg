@@ -1,4 +1,4 @@
-*! v1.1.0, S Bauldry, 25aug2017
+*! v1.2.0, S Bauldry, 18sep2017
 
 capture program drop cr_pc_lf
 program cr_pc_lf
@@ -17,17 +17,23 @@ program cr_pc_lf
     tempvar phi`i'
 	qui gen double `phi`i'' = `f`i''
   }
+  
+  * setting values for y
+  forval j = 1/$nCat {
+    local y_`j' ${y_`j'}
+  }
+  local M $nCat
 	
   *** likelihood function for logit link
   if ( "$Link" == "logit" ) {	
 
     * equation for first value of Y
-    qui replace `lnf' = ln(invlogit(-`xb_c' - `xb_p')) if $ML_y == 1
+    qui replace `lnf' = ln(invlogit(-`xb_c' - `xb_p')) if $ML_y == `y_1'
 	
 	* build equations for middle values of Y
 	if ( $nCat == 3 ) {
 	  qui replace `lnf' = ln(1 - invlogit(-`xb_c' - `xb_p')) +  ///
-		                  ln(invlogit(-`xb_c' - `xb_p'*`phi2')) if $ML_y == 2
+		                  ln(invlogit(-`xb_c' - `xb_p'*`phi2')) if $ML_y == `y_2'
 	}
 	
 	if ( $nCat > 3 ) {
@@ -42,7 +48,7 @@ program cr_pc_lf
         }
 	
         local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
-        qui replace `lnf' = `meqn' if $ML_y == `k'
+        qui replace `lnf' = `meqn' if $ML_y == `y_`k''
       }
 	}
 	
@@ -51,7 +57,7 @@ program cr_pc_lf
 	forval o = 2/$nCatm1 {
 	  local eqn `" `eqn' + ln(1 - invlogit(-`xb_c' - `xb_p'*`phi`o'')) "'
     }
-	qui replace `lnf' = `eqn' if $ML_y == $nCat
+	qui replace `lnf' = `eqn' if $ML_y == `y_`M''
   }
   
   
@@ -59,12 +65,12 @@ program cr_pc_lf
   if ( "$Link" == "probit" ) {	
 
     * equation for first value of Y
-    qui replace `lnf' = ln(normal(-`xb_c' - `xb_p')) if $ML_y == 1
+    qui replace `lnf' = ln(normal(-`xb_c' - `xb_p')) if $ML_y == `y_1'
 	
 	* build equations for middle values of Y
 	if ( $nCat == 3 ) {
 	  qui replace `lnf' = ln(1 - normal(-`xb_c' - `xb_p')) +  ///
-		                  ln(normal(-`xb_c' - `xb_p'*`phi2')) if $ML_y == 2
+		                  ln(normal(-`xb_c' - `xb_p'*`phi2')) if $ML_y == `y_2'
 	}
 	
 	if ( $nCat > 3 ) {
@@ -79,7 +85,7 @@ program cr_pc_lf
         }
 	
         local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
-        qui replace `lnf' = `meqn' if $ML_y == `k'
+        qui replace `lnf' = `meqn' if $ML_y == `y_`k''
       }
 	}
 	
@@ -88,7 +94,7 @@ program cr_pc_lf
 	forval o = 2/$nCatm1 {
 	  local eqn `" `eqn' + ln(1 - normal(-`xb_c' - `xb_p'*`phi`o'')) "'
     }
-	qui replace `lnf' = `eqn' if $ML_y == $nCat
+	qui replace `lnf' = `eqn' if $ML_y == `y_`M''
   }
   
   
@@ -96,12 +102,12 @@ program cr_pc_lf
   if ( "$Link" == "cloglog" ) {	
 
     * equation for first value of Y
-    qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_p'))) if $ML_y == 1
+    qui replace `lnf' = ln(1 - exp(-exp(-`xb_c' - `xb_p'))) if $ML_y == `y_1'
 	
 	* build equations for middle values of Y
 	if ( $nCat == 3 ) {
 	  qui replace `lnf' = ln(exp(-exp(-`xb_c' - `xb_p'))) +  ///
-		                  ln(1 - exp(-exp(-`xb_c' - `xb_p'*`phi2'))) if $ML_y == 2
+		                  ln(1 - exp(-exp(-`xb_c' - `xb_p'*`phi2'))) if $ML_y == `y_2'
 	}
 	
 	if ( $nCat > 3 ) {
@@ -116,7 +122,7 @@ program cr_pc_lf
         }
 	
         local meqn `" `meqn_a' `meqn_b' `meqn_c' "'
-        qui replace `lnf' = `meqn' if $ML_y == `k'
+        qui replace `lnf' = `meqn' if $ML_y == `y_`k''
       }
 	}
 	
@@ -125,7 +131,7 @@ program cr_pc_lf
 	forval o = 2/$nCatm1 {
 	  local eqn `" `eqn' + ln(exp(-exp(-`xb_c' - `xb_p'*`phi`o''))) "'
     }
-	qui replace `lnf' = `eqn' if $ML_y == $nCat
+	qui replace `lnf' = `eqn' if $ML_y == `y_`M''
   }
 
 end
@@ -134,4 +140,4 @@ end
 /* History
 1.0.0  11.22.16  initial likelihood program for arbitrary number of categories
 1.1.0  08.25.17  generalized program for unlimited number of categories
-*/
+1.2.0  09.18.17  fixed bug with non-standard values for Y
