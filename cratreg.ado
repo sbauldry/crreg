@@ -19,7 +19,7 @@ program Estimate, eclass sortpreserve
 		   LINK(string)        /// link function (logit, probit, or cloglog)
 		   Level(cilevel)      /// display option for confidence intervals
 		   vce(string)         /// robust and cluster robust standard errors
-		   or rrr irr hr EForm /// exponential form options
+		   or EForm            /// exponential form options
 		   svy *               /// -mlopts, display options
 		   ]
 		   
@@ -69,10 +69,10 @@ program Estimate, eclass sortpreserve
 	}
 	
 	* exponential form
-	local eform `or' `rrr' `irr' `hr' `eform'
+	local eform `or' `eform'
 	local efopt : word count `eform'
 	if `efopt' > 1 {
-		dis as error "only one of or, rrr, irr, hr, eform can be specified"
+		dis as error "only one of or or eform can be specified"
 		exit 198
 	}
 	
@@ -268,11 +268,11 @@ end
 
 capture program drop Replay
 program Replay
-	syntax [, Level(cilevel) or irr rrr hr EForm *]
+	syntax [, Level(cilevel) or EForm *]
 	
 	* display options
 	_get_diopts diopts options, `options'
-	local diopts `diopts' `eform' level(`level') `or' `rrr' `irr' `hr'
+	local diopts `diopts' `eform' level(`level') `or' 
 	
 	ml display, `diopts'
 end
@@ -324,4 +324,5 @@ end
 1.0.2  07.16.17  updated labels again
 1.1.0  08.29.17  changed name of program
 1.2.0  09.18.17  fixed bug with non-standard values for Y
+1.2.1  09.20.17  updated exponential form options
 
